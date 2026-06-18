@@ -5,23 +5,21 @@ import Link from "next/link";
 import { Button } from "@heroui/react";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const { data: session, isPending } = authClient.useSession();
+
+  const user = session?.user;
+
+  console.log(user);
+
   const navLinks = [
-    {
-      name: "Browse Jobs",
-      href: "/jobs",
-    },
-    {
-      name: "Company",
-      href: "/company",
-    },
-    {
-      name: "Pricing",
-      href: "/pricing",
-    },
+    { name: "Browse Jobs", href: "/jobs" },
+    { name: "Company", href: "/company" },
+    { name: "Pricing", href: "/pricing" },
   ];
 
   return (
@@ -48,7 +46,7 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="whitespace-nowrap text-sm text-white/80 transition-all duration-300 hover:text-white"
+                className="text-sm text-white/80 hover:text-white"
               >
                 {link.name}
               </Link>
@@ -56,29 +54,51 @@ export default function Navbar() {
 
             <div className="h-5 w-px bg-white/20" />
 
-            <Link
-              href="/signin"
-              className="whitespace-nowrap text-sm font-medium text-indigo-400 hover:text-indigo-300"
-            >
-              Sign In
-            </Link>
+            {/* LOADING STATE */}
+            {isPending && (
+              <span className="text-white/50 text-sm">Loading...</span>
+            )}
 
-            <Button
-              as={Link}
-              href="/signup"
-              radius="lg"
-              size="sm"
-              className="bg-linear-to-r from-indigo-500 to-violet-600 px-6 text-sm font-medium text-white rounded-sm xl:px-7"
-            >
-              Get Started
-            </Button>
+            {/* NOT LOGGED IN */}
+            {!isPending && !user && (
+              <>
+                <Link
+                  href="/signin"
+                  className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
+                >
+                  Sign In
+                </Link>
+
+                <Link href="/signup">
+                  <Button
+                    radius="lg"
+                    size="sm"
+                    className="bg-linear-to-r from-indigo-500 to-violet-600 px-6 text-sm text-white rounded-sm"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
+
+            {/* LOGGED IN USER */}
+            {!isPending && user && (
+              <div className="flex items-center gap-2">
+                <Image
+                  src={user.image || "/default.png"}
+                  alt="user"
+                  width={42}
+                  height={42}
+                  className="rounded-full"
+                />
+                <span className="text-white text-sm">{user.name}</span>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isOpen}
             className="text-white lg:hidden"
           >
             {isOpen ? <HiX size={26} /> : <HiOutlineMenuAlt3 size={26} />}
@@ -92,13 +112,13 @@ export default function Navbar() {
           }`}
         >
           <div className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl p-4 sm:rounded-3xl sm:p-5">
-            <div className="flex flex-col gap-4 sm:gap-5">
+            <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-white/80 transition hover:text-white"
+                  className="text-white/80 hover:text-white"
                 >
                   {link.name}
                 </Link>
@@ -106,23 +126,33 @@ export default function Navbar() {
 
               <div className="h-px bg-white/10" />
 
-              <Link
-                href="/signin"
-                onClick={() => setIsOpen(false)}
-                className="text-indigo-400"
-              >
-                Sign In
-              </Link>
+              {!user ? (
+                <>
+                  <Link href="/signin" onClick={() => setIsOpen(false)}>
+                    <span className="text-indigo-400">Sign In</span>
+                  </Link>
 
-              <Button
-                as={Link}
-                href="/signup"
-                onPress={() => setIsOpen(false)}
-                radius="lg"
-                className="w-full bg-linear-to-r from-indigo-500 to-violet-600 text-white rounded-sm"
-              >
-                Get Started
-              </Button>
+                  <Button
+                    as={Link}
+                    href="/signup"
+                    onPress={() => setIsOpen(false)}
+                    className="w-full bg-linear-to-r from-indigo-500 to-violet-600 text-white"
+                  >
+                    Get Started
+                  </Button>
+                </>
+              ) : (
+                <div className="flex items-center gap-2 text-white">
+                  <Image
+                    src={user.image || "/default.png"}
+                    width={30}
+                    height={30}
+                    className="rounded-full"
+                    alt="user"
+                  />
+                  <span>{user.name}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
