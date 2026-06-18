@@ -6,6 +6,7 @@ import { Button } from "@heroui/react";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,9 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
+          <div
+            className={`hidden lg:flex items-center ${user ? "gap-4" : "gap-10"}`}
+          >
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -59,41 +62,50 @@ export default function Navbar() {
               <span className="text-white/50 text-sm">Loading...</span>
             )}
 
-            {/* NOT LOGGED IN */}
-            {!isPending && !user && (
+            {user ? (
               <>
-                <Link
-                  href="/signin"
-                  className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
+                <p>Hi, {user?.name}! </p>
+                <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 hover:ring-blue-400 transition-all flex-shrink-0">
+                  {user?.image ? (
+                    <Image
+                      width={70}
+                      height={70}
+                      src={user.image}
+                      alt={user?.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                      {user?.name?.charAt(0)?.toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  onClick={async () => await authClient.signOut()}
+                  variant="danger"
+                  className={"rounded-sm"}
                 >
-                  Sign In
-                </Link>
-
-                <Link href="/signup">
-                  <Button
-                    radius="lg"
-                    size="sm"
-                    className="bg-linear-to-r from-indigo-500 to-violet-600 px-6 text-sm text-white rounded-sm"
-                  >
-                    Get Started
-                  </Button>
-                </Link>
+                  <LogOut />
+                  Logout
+                </Button>
               </>
+            ) : (
+              <Link
+                href="/signin"
+                className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
+              >
+                Sign In
+              </Link>
             )}
 
-            {/* LOGGED IN USER */}
-            {!isPending && user && (
-              <div className="flex items-center gap-2">
-                <Image
-                  src={user.image || "/default.png"}
-                  alt="user"
-                  width={42}
-                  height={42}
-                  className="rounded-full"
-                />
-                <span className="text-white text-sm">{user.name}</span>
-              </div>
-            )}
+            <Button
+              radius="lg"
+              size="sm"
+              className="bg-linear-to-r from-indigo-500 to-violet-600 px-6 text-sm text-white rounded-sm"
+            >
+              Get Started
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -126,33 +138,16 @@ export default function Navbar() {
 
               <div className="h-px bg-white/10" />
 
-              {!user ? (
-                <>
-                  <Link href="/signin" onClick={() => setIsOpen(false)}>
-                    <span className="text-indigo-400">Sign In</span>
-                  </Link>
+              <Link href="/signin" onClick={() => setIsOpen(false)}>
+                <span className="text-indigo-400">Sign In</span>
+              </Link>
 
-                  <Button
-                    as={Link}
-                    href="/signup"
-                    onPress={() => setIsOpen(false)}
-                    className="w-full bg-linear-to-r from-indigo-500 to-violet-600 text-white"
-                  >
-                    Get Started
-                  </Button>
-                </>
-              ) : (
-                <div className="flex items-center gap-2 text-white">
-                  <Image
-                    src={user.image || "/default.png"}
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                    alt="user"
-                  />
-                  <span>{user.name}</span>
-                </div>
-              )}
+              <Button
+                onPress={() => setIsOpen(false)}
+                className="w-full bg-linear-to-r from-indigo-500 to-violet-600 text-white"
+              >
+                Get Started
+              </Button>
             </div>
           </div>
         </div>

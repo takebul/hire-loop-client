@@ -42,7 +42,7 @@ const SigninPage = () => {
     const { data, error } = await authClient.signIn.email({
       email,
       password,
-      // callbackURL: callbackURL,
+      callbackURL: callbackURL,
     });
 
     setIsLoading(false);

@@ -2,6 +2,7 @@
 
 import { Input, Button, Chip } from "@heroui/react";
 import { Search } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function Hero() {
   return (
@@ -41,9 +42,17 @@ export default function Hero() {
         {/* Heading */}
 
         <div className="mx-auto mt-8 max-w-4xl text-center">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.4,
+              scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+            }}
+            className="text-5xl md:text-7xl font-bold tracking-tight text-white"
+          >
             Find Your Dream Job Today
-          </h1>
+          </motion.h1>
 
           <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto">
             HireLoop connects top talent with world-class companies. Browse

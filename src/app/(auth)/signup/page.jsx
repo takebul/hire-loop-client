@@ -11,6 +11,8 @@ import {
   InputGroup,
   Label,
   TextField,
+  Radio,
+  RadioGroup,
 } from "@heroui/react";
 
 import { Eye, EyeOff } from "lucide-react";
@@ -26,7 +28,8 @@ const SignupPage = () => {
 
   // Form UI States
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // Spinner state
+  const [isLoading, setIsLoading] = useState(false);
+  const [role, setRole] = useState("seeker");
   const router = useRouter();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -45,6 +48,7 @@ const SignupPage = () => {
       image,
       email,
       password,
+      role,
       callbackURL: callbackURL,
       disableSignUp: true, // Auto login off
     });
@@ -84,7 +88,7 @@ const SignupPage = () => {
             <FieldError className="text-xs text-red-400 mt-1" />
           </TextField>
 
-          <TextField isRequired name="image" type="url">
+          <TextField name="image" type="url">
             <Label className="text-slate-300 font-medium text-sm">
               Image URL
             </Label>
@@ -159,6 +163,33 @@ const SignupPage = () => {
             </Description>
             <FieldError className="text-xs text-red-400 mt-1" />
           </TextField>
+
+          <div className="flex flex-col gap-4">
+            <Label>Account Type</Label>
+            <RadioGroup
+              defaultValue="seeker"
+              name="role"
+              orientation="horizontal"
+              onChange={(value) => setRole(value)}
+            >
+              <Radio value="seeker">
+                <Radio.Content>
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  Seeker
+                </Radio.Content>
+              </Radio>
+              <Radio value="recruiter">
+                <Radio.Content>
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  Recruiter
+                </Radio.Content>
+              </Radio>
+            </RadioGroup>
+          </div>
 
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-2">
