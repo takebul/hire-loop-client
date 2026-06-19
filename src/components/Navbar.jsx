@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@heroui/react";
+import { Button, Dropdown, Label } from "@heroui/react";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { LogOut } from "lucide-react";
+import { ArrowRightFromSquare, Gear, Persons } from "@gravity-ui/icons";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,30 +66,98 @@ export default function Navbar() {
             {user ? (
               <>
                 <p>Hi, {user?.name}! </p>
-                <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 hover:ring-blue-400 transition-all flex-shrink-0">
-                  {user?.image ? (
-                    <Image
-                      width={70}
-                      height={70}
-                      src={user.image}
-                      alt={user?.name}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
-                      {user?.name?.charAt(0)?.toUpperCase()}
+
+                <Dropdown>
+                  <Dropdown.Trigger className="rounded-full">
+                    <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 hover:ring-blue-400 transition-all flex-shrink-0">
+                      {user?.image ? (
+                        <Image
+                          width={70}
+                          height={70}
+                          src={user.image}
+                          alt={user?.name}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                          {user?.name?.charAt(0)?.toUpperCase()}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <Button
-                  onClick={async () => await authClient.signOut()}
-                  variant="danger"
-                  className={"rounded-sm"}
-                >
-                  <LogOut />
-                  Logout
-                </Button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Popover>
+                    <div className="px-3 pt-3 pb-1">
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 hover:ring-blue-400 transition-all flex-shrink-0">
+                          {user?.image ? (
+                            <Image
+                              width={70}
+                              height={70}
+                              src={user.image}
+                              alt={user?.name}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                              {user?.name?.charAt(0)?.toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-0">
+                          <p className="text-sm leading-5 font-medium">
+                            {user?.name}
+                          </p>
+                          <p className="text-xs leading-none text-muted">
+                            {user?.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <Dropdown.Menu>
+                      <Dropdown.Item id="dashboard" textValue="Dashboard">
+                        <Link href={"/dashboard/recruiter"}>
+                          <Label>Dashboard</Label>
+                        </Link>
+                      </Dropdown.Item>
+                      <Dropdown.Item id="profile" textValue="Profile">
+                        <Label>Profile</Label>
+                      </Dropdown.Item>
+                      <Dropdown.Item id="settings" textValue="Settings">
+                        <div className="flex w-full items-center justify-between gap-2">
+                          <Label>Settings</Label>
+                          <Gear className="size-3.5 text-muted" />
+                        </div>
+                      </Dropdown.Item>
+                      <Dropdown.Item id="new-project" textValue="New project">
+                        <div className="flex w-full items-center justify-between gap-2">
+                          <Label>Create Team</Label>
+                          <Persons className="size-3.5 text-muted" />
+                        </div>
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        id="logout"
+                        textValue="Logout"
+                        variant="danger"
+                        className="mt-3"
+                      >
+                        <div className="flex w-full items-center justify-between gap-2">
+                          <Button
+                            onClick={async () => await authClient.signOut()}
+                            className="w-full rounded-xl"
+                            variant="danger"
+                          >
+                            <Label className="text-white font-semibold">
+                              Log Out
+                            </Label>
+                            <ArrowRightFromSquare className="size-3.5" />
+                          </Button>
+                        </div>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown.Popover>
+                </Dropdown>
               </>
             ) : (
               <Link

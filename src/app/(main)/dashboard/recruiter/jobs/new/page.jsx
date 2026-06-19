@@ -14,10 +14,13 @@ import {
   Label,
 } from "@heroui/react";
 import { Briefcase, ArrowRight } from "@gravity-ui/icons";
+import { createJob } from "@/lib/actions/jobs";
+import toast from "react-hot-toast";
 
 export default function PostJobPage() {
   const [companyInfo] = useState({
     name: "Hire Loop",
+    id: "hireLoop_123",
     isApproved: true,
   });
 
@@ -26,11 +29,8 @@ export default function PostJobPage() {
   // Dynamic error state mapped directly to the component layout tree
   const [formErrors, setFormErrors] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Reset visual errors on new submission attempt
-    setFormErrors({});
 
     if (!companyInfo.isApproved) {
       alert("Your company profile must be approved before you can post jobs.");
@@ -98,14 +98,34 @@ export default function PostJobPage() {
       return;
     }
 
-    // Format output data payload
-    data.status = "active";
-    data.companyName = companyInfo.name;
-    data.isPubliclyVisible = true;
-    data.isRemote = isRemote;
+    // Reset visual errors on new submission attempt
+    setFormErrors({});
 
-    console.log("Submitting Cleaned Job Data Set:", data);
-    alert("Success! Your job post is now active and publicly listed.");
+    // Format output data payload
+
+    const payload = {
+      ...data,
+      isRemote,
+      status: "active",
+      companyName: companyInfo.name,
+      companyId: companyInfo.id,
+      isPubliclyVisible: true,
+      isRemote: isRemote,
+    };
+
+    console.log(payload);
+
+    const res = await createJob(payload);
+
+    console.log(res);
+
+    if (res.insertedId) {
+      toast.success("Job posted successfully");
+      e.target.reset();
+      setIsRemote(false);
+    }
+
+    toast.success("Success! Your job post is now active and publicly listed.");
   };
 
   return (
@@ -125,7 +145,7 @@ export default function PostJobPage() {
         {/* Dynamic Form Setup */}
         <Form
           onSubmit={handleSubmit}
-          validationBehavior="aria"
+          // validationBehavior="aria"
           validationErrors={formErrors}
           className="space-y-8"
         >
