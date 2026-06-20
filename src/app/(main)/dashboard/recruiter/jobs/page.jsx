@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { getCompanyJobs } from "@/lib/api/jobs";
+import { getLoggedInRecruiterCompany } from "@/lib/api/companies";
 
 const formatCurrency = (min, max, currency) => {
   const symbolMap = { USD: "$", EUR: "€", GBP: "£" };
@@ -28,8 +29,8 @@ const formatDate = (dateString) => {
 };
 
 export default async function RecruiterJobs() {
-  const companyId = "hireLoop_123";
-  const jobs = (await getCompanyJobs(companyId)) || [];
+  const company = await getLoggedInRecruiterCompany();
+  const jobs = (await getCompanyJobs(company._id)) || [];
 
   return (
     <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center">

@@ -16,11 +16,9 @@ export default function Navbar() {
 
   const user = session?.user;
 
-  console.log(user);
-
   const navLinks = [
     { name: "Browse Jobs", href: "/jobs" },
-    { name: "Company", href: "/company" },
+    { name: "Companies", href: "/companies" },
     { name: "Pricing", href: "/pricing" },
   ];
 
@@ -74,8 +72,8 @@ export default function Navbar() {
                         <Image
                           width={70}
                           height={70}
-                          src={user.image}
-                          alt={user?.name}
+                          src={user.image.trim()}
+                          alt={user?.name || "User profile"}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                         />
@@ -94,8 +92,8 @@ export default function Navbar() {
                             <Image
                               width={70}
                               height={70}
-                              src={user.image}
-                              alt={user?.name}
+                              src={user.image.trim()}
+                              alt={user?.name || "User profile"}
                               referrerPolicy="no-referrer"
                               className="w-full h-full object-cover"
                             />
@@ -117,7 +115,7 @@ export default function Navbar() {
                     </div>
                     <Dropdown.Menu>
                       <Dropdown.Item id="dashboard" textValue="Dashboard">
-                        <Link href={"/dashboard/recruiter"}>
+                        <Link className="w-full" href={"/dashboard/recruiter"}>
                           <Label>Dashboard</Label>
                         </Link>
                       </Dropdown.Item>
@@ -142,18 +140,16 @@ export default function Navbar() {
                         variant="danger"
                         className="mt-3"
                       >
-                        <div className="flex w-full items-center justify-between gap-2">
-                          <Button
-                            onClick={async () => await authClient.signOut()}
-                            className="w-full rounded-xl"
-                            variant="danger"
-                          >
-                            <Label className="text-white font-semibold">
-                              Log Out
-                            </Label>
-                            <ArrowRightFromSquare className="size-3.5" />
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={async () => await authClient.signOut()}
+                          className="w-full rounded-xl"
+                          variant="danger"
+                        >
+                          <Label className="text-white font-semibold">
+                            Log Out
+                          </Label>
+                          <ArrowRightFromSquare className="size-3.5" />
+                        </Button>
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown.Popover>
@@ -194,6 +190,115 @@ export default function Navbar() {
         >
           <div className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl p-4 sm:rounded-3xl sm:p-5">
             <div className="flex flex-col gap-4">
+              {isPending && (
+                <span className="text-white/50 text-sm">Loading...</span>
+              )}
+
+              {user ? (
+                <div className="flex flex-col-reverse items-start gap-4 mb-4">
+                  <p>Hi, {user?.name}! </p>
+
+                  <Dropdown>
+                    <Dropdown.Trigger className="rounded-full">
+                      <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 hover:ring-blue-400 transition-all flex-shrink-0">
+                        {user?.image ? (
+                          <Image
+                            width={70}
+                            height={70}
+                            src={user.image.trim()}
+                            alt={user?.name || "User profile"}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                            {user?.name?.charAt(0)?.toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    </Dropdown.Trigger>
+                    <Dropdown.Popover>
+                      <div className="px-3 pt-3 pb-1">
+                        <div className="flex items-center gap-2">
+                          <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 hover:ring-blue-400 transition-all flex-shrink-0">
+                            {user?.image ? (
+                              <Image
+                                width={70}
+                                height={70}
+                                src={user.image.trim()}
+                                alt={user?.name || "User profile"}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                                {user?.name?.charAt(0)?.toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-col gap-0">
+                            <p className="text-sm leading-5 font-medium">
+                              {user?.name}
+                            </p>
+                            <p className="text-xs leading-none text-muted">
+                              {user?.email}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <Dropdown.Menu>
+                        <Dropdown.Item id="dashboard" textValue="Dashboard">
+                          <Link
+                            className="w-full"
+                            href={"/dashboard/recruiter"}
+                          >
+                            <Label>Dashboard</Label>
+                          </Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item id="profile" textValue="Profile">
+                          <Label>Profile</Label>
+                        </Dropdown.Item>
+                        <Dropdown.Item id="settings" textValue="Settings">
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <Label>Settings</Label>
+                            <Gear className="size-3.5 text-muted" />
+                          </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item id="new-project" textValue="New project">
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <Label>Create Team</Label>
+                            <Persons className="size-3.5 text-muted" />
+                          </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          id="logout"
+                          textValue="Logout"
+                          variant="danger"
+                          className="mt-3"
+                        >
+                          <Button
+                            onClick={async () => await authClient.signOut()}
+                            className="w-full rounded-xl"
+                            variant="danger"
+                          >
+                            <Label className="text-white font-semibold">
+                              Log Out
+                            </Label>
+                            <ArrowRightFromSquare className="size-3.5" />
+                          </Button>
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown.Popover>
+                  </Dropdown>
+                </div>
+              ) : (
+                <Link
+                  href="/signin"
+                  className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
+                >
+                  Sign In
+                </Link>
+              )}
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -206,10 +311,6 @@ export default function Navbar() {
               ))}
 
               <div className="h-px bg-white/10" />
-
-              <Link href="/signin" onClick={() => setIsOpen(false)}>
-                <span className="text-indigo-400">Sign In</span>
-              </Link>
 
               <Button
                 onPress={() => setIsOpen(false)}
