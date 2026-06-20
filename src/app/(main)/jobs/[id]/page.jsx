@@ -144,9 +144,7 @@ export default async function JobDetailPage({ params }) {
                     {/* Shimmer overlay animation effect */}
                     <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_ease-in-out]" />
 
-                    <span className="text-sm tracking-wide">
-                      Submit Application
-                    </span>
+                    <span className="text-sm tracking-wide">Apply Now</span>
                     <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
                 </motion.div>
