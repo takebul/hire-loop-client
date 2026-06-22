@@ -139,7 +139,7 @@ export default async function JobDetailPage({ params }) {
                 >
                   <Link
                     href={`/jobs/${id}/apply`}
-                    className="relative w-full inline-flex items-center justify-center gap-2 bg-white text-neutral-950 font-semibold px-6 py-4 rounded-2xl shadow-xl hover:bg-neutral-100 transition-all duration-300 group overflow-hidden"
+                    className="relative w-full inline-flex items-center justify-center gap-2 bg-white text-neutral-950 font-semibold px-6 py-4 rounded-2xl shadow-xl hover:bg-neutral-200 transition-all duration-300 group overflow-hidden"
                   >
                     {/* Shimmer overlay animation effect */}
                     <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_ease-in-out]" />

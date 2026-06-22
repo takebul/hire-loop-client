@@ -1,4 +1,4 @@
-import { path } from "motion/react-client";
+import { data, path } from "motion/react-client";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -18,6 +18,18 @@ export const serverPost = async (path, data) => {
   });
 
   // handle 401, 401, 403, 500
+
+  return res.json();
+};
+
+export const serverPatch = async (path, data) => {
+  const res = await fetch(`${baseUrl}${path}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
   return res.json();
 };

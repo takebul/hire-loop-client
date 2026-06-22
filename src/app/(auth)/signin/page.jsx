@@ -14,15 +14,16 @@ import {
 
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const SigninPage = () => {
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
-  const callbackURL = searchParams.get("callbackUrl") || "/";
+  const router = useRouter();
 
   // Form UI States
   const [isVisible, setIsVisible] = useState(false);
@@ -42,7 +43,6 @@ const SigninPage = () => {
     const { data, error } = await authClient.signIn.email({
       email,
       password,
-      callbackURL: callbackURL,
     });
 
     setIsLoading(false);
@@ -63,6 +63,7 @@ const SigninPage = () => {
       }
     } else {
       toast.success("Welcome back!");
+      router.push(redirectTo);
     }
   };
 
@@ -163,7 +164,7 @@ const SigninPage = () => {
         <div className="mt-6 text-center text-sm text-slate-400 border-t border-slate-800 pt-4">
           Don't have an account yet?{" "}
           <Link
-            href={`/signup?callbackUrl=${encodeURIComponent(callbackURL)}`}
+            href={`/signup?redirect=${redirectTo}`}
             className="text-blue-400 font-medium hover:underline hover:text-blue-300 transition-colors"
           >
             Signup

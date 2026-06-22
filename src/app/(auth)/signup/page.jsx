@@ -24,13 +24,13 @@ import toast from "react-hot-toast";
 
 const SignupPage = () => {
   const searchParams = useSearchParams();
-  const callbackURL = searchParams.get("callbackUrl") || "/";
+  const redirectTo = searchParams.get("redirect") || "/";
+  const router = useRouter();
 
   // Form UI States
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState("seeker");
-  const router = useRouter();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -43,13 +43,15 @@ const SignupPage = () => {
       formData.entries(),
     );
 
+    const plan = role === "seeker" ? "seeker_free" : "recruiter_free";
+
     const { data, error } = await authClient.signUp.email({
       name,
       image,
       email,
       password,
       role,
-      callbackURL: callbackURL,
+      plan,
       disableSignUp: true, // Auto login off
     });
 
@@ -61,7 +63,7 @@ const SignupPage = () => {
     } else {
       console.log("Signup successful:", data);
       toast.success("Signup successful! Please sign in.");
-      router.push("/signin");
+      router.push(redirectTo);
     }
   };
 
@@ -218,7 +220,7 @@ const SignupPage = () => {
         <div className="mt-6 text-center text-sm text-slate-400 border-t border-slate-800 pt-4">
           Already have an account?{" "}
           <Link
-            href={`/signin?callbackUrl=${encodeURIComponent(callbackURL)}`}
+            href={`/signin?redirect=${redirectTo}`}
             className="text-blue-400 font-medium hover:underline hover:text-blue-300 transition-colors"
           >
             Sign In

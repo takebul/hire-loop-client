@@ -11,19 +11,22 @@ import {
   Building2,
   Globe,
 } from "lucide-react";
-import { createCompany } from "@/lib/actions/companies";
+import { createCompany, updateCompany } from "@/lib/actions/companies";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
 export default function CompanyProfile({ recruiter, recruiterCompany }) {
-  const [companyData, setCompanyData] = useState(recruiterCompany);
+  // Ensure companyData falls back safely if recruiterCompany is empty or empty object
+  const [companyData, setCompanyData] = useState(
+    recruiterCompany && Object.keys(recruiterCompany).length > 0
+      ? recruiterCompany
+      : null,
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-
-  console.log(companyData);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -85,8 +88,6 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         );
         const imgbbData = await imgbbResponse.json();
 
-        console.log(imgbbData);
-
         if (imgbbData.success) {
           logoUrl = imgbbData.data.url;
         } else {
@@ -104,21 +105,42 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         employeeRange: formFields.employeeRange,
         description: formFields.description,
         logo: logoUrl,
-        status: companyData ? companyData.status : "Pending",
-        recruiterId: recruiter?.id,
+        status: companyData?.status ? companyData.status : "Pending",
+        recruiterId: recruiter?.id || recruiter?._id,
       };
 
-      setCompanyData(updatedPayload);
+      if (!companyData?._id) {
+        // --- CREATE FLOW ---
+        const payload = await createCompany(updatedPayload);
 
-      const payload = await createCompany(updatedPayload);
-
-      console.log(payload);
-
-      if (payload.insertedId) {
-        toast.success("Company profile created successfully!");
-        setIsEditing(false);
+        if (payload?.insertedId) {
+          toast.success("Company profile created successfully!");
+          // Save the freshly minted database payload containing the new _id context
+          setCompanyData({ ...updatedPayload, _id: payload.insertedId });
+          setIsEditing(false);
+          setLogoFile(null);
+        } else {
+          throw new Error("Failed to save data on backend host.");
+        }
       } else {
-        throw new Error("Failed to save data on backend host.");
+        // --- UPDATE FLOW ---
+        // Retain the Mongo ID identifier inside your internal Server Action execution wrapper
+        const payloadData = await updateCompany(
+          companyData._id,
+          updatedPayload,
+        );
+
+        // MongoDB returns modifiedCount / matchedCount upon updating records
+        if (payloadData?.modifiedCount > 0 || payloadData?.matchedCount > 0) {
+          toast.success("Company profile data update successful!");
+          setCompanyData({ ...updatedPayload, _id: companyData._id });
+          setIsEditing(false);
+          setLogoFile(null);
+        } else {
+          throw new Error(
+            "Failed to update data on backend host or no data changed",
+          );
+        }
       }
     } catch (error) {
       console.error("Submission error:", error);
@@ -129,7 +151,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
   };
 
   // --- CONDITION 1: NO COMPANY REGISTERED YET ---
-  if (!companyData?._id && !isEditing) {
+  if (!companyData?.companyName && !isEditing) {
     return (
       <div className="min-h-screen bg-[#09090b] text-white p-6 sm:p-10 flex flex-col items-center justify-center">
         <div className="w-full max-w-md bg-[#111112] border border-[#232326] rounded-2xl shadow-2xl p-8 text-center flex flex-col items-center gap-5">
@@ -166,8 +188,8 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
               <div className="w-16 h-16 bg-[#1c1c1e] border border-[#2d2d33] rounded-2xl overflow-hidden flex items-center justify-center flex-shrink-0">
                 {companyData.logo ? (
                   <Image
-                    width={30}
-                    height={30}
+                    width={64}
+                    height={64}
                     src={companyData.logo}
                     alt="Company Logo"
                     className="w-full h-full object-cover"
@@ -188,7 +210,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                         : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                     }`}
                   >
-                    {companyData.status}
+                    {companyData.status || "Pending"}
                   </span>
                 </div>
                 <p className="text-xs font-semibold uppercase text-zinc-500 tracking-widest mt-1">
@@ -269,7 +291,9 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
           <div className="w-full flex items-start justify-between border-b border-[#232326] p-6 md:p-8">
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight mb-1">
-                {companyData ? "Modify Company Record" : "Register New Company"}
+                {companyData?._id
+                  ? "Modify Company Record"
+                  : "Register New Company"}
               </h2>
               <p className="text-xs text-zinc-400">
                 Update details to refresh active pipeline jobs across the
@@ -526,8 +550,8 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                     />
                     {logoPreview ? (
                       <Image
-                        width={30}
-                        height={30}
+                        width={48}
+                        height={48}
                         src={logoPreview}
                         alt="Preview"
                         className="w-full h-full object-cover"

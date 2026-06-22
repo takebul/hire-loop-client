@@ -1,9 +1,13 @@
 "use server";
 
-import { serverPost } from "../core/server";
+import { serverPatch, serverPost } from "../core/server";
 
 export const createCompany = async (newCompanyData) => {
   return serverPost("/api/companies", newCompanyData);
+};
+
+export const updateCompany = async (id, updateCompanyData) => {
+  return serverPatch(`/api/companies/${id}`, updateCompanyData);
 };
 
 // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
