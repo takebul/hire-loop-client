@@ -116,11 +116,7 @@ export default function PostJobForm({ company }) {
       isRemote: isRemote,
     };
 
-    console.log(payload);
-
     const res = await createJob(payload);
-
-    console.log(res);
 
     if (res.insertedId) {
       toast.success("Job posted successfully");

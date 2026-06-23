@@ -40,9 +40,6 @@ const ApplyPage = async ({ params }) => {
 
   const plan = await getPlanById(user?.plan || "seeker_free");
 
-  console.log(plan);
-  console.log(user);
-
   const currentCount = applications?.length || 0;
   const maxLimit = plan.maxApplicationPerMonth;
   const hasRemainingQuota = currentCount < maxLimit;
@@ -110,7 +107,10 @@ const ApplyPage = async ({ params }) => {
 
       {/* Conditionally Render Form or Lock Screen */}
       {hasRemainingQuota ? (
-        <JobApply applicant={user} job={job} />
+        <>
+          <JobApply applicant={user} job={job} />
+          {/* <p>{user?.plan}</p> */}
+        </>
       ) : (
         <div className="w-full max-w-4xl bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center shadow-xl shadow-black/40">
           <div className="w-14 h-14 bg-rose-500/10 border border-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-4">

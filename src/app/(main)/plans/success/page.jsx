@@ -37,7 +37,6 @@ export default async function Success({ searchParams }) {
     };
     // update the user table about the new plan
     const result = await createSubscriptions(subsInfo);
-    console.log(result);
 
     return (
       <section className="min-h-screen bg-[#09090b] text-white flex items-center justify-center p-4 antialiased">

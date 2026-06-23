@@ -47,8 +47,6 @@ const SigninPage = () => {
 
     setIsLoading(false);
 
-    console.log(data);
-
     if (error) {
       console.error("Signin failed:", error.message);
 

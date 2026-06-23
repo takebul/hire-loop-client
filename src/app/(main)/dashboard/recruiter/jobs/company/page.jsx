@@ -6,8 +6,6 @@ const RegisterCompanyPage = async () => {
   const user = await getUserSession();
   const company = await getRecruiterCompany(user?.id);
 
-  console.log(company, user);
-
   return (
     <div>
       <CompanyProfile recruiter={user} recruiterCompany={company} />
