@@ -1,9 +1,9 @@
 "use server";
 
-import { serverPost } from "../core/server";
+import { serverMutation } from "../core/server";
 
 export const createJob = async (newJobData) => {
-  return serverPost("/api/jobs", newJobData);
+  return serverMutation("/api/jobs", newJobData);
 };
 
 // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;

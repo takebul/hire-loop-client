@@ -22,6 +22,19 @@ export default function Navbar() {
     { name: "Pricing", href: "/plans" },
   ];
 
+  const dashboardLinks = {
+    seeker: "/dashboard/seeker",
+    recruiter: "/dashboard/recruiter",
+    admin: "/dashboard/admin",
+  };
+
+  if (user?.email) {
+    navLinks.push({
+      name: "Dashboard",
+      href: dashboardLinks[user?.role || "seeker"],
+    });
+  }
+
   return (
     <header className="top-0 z-50 w-full bg-black px-3 py-4 sm:px-4 sm:py-5">
       <nav className="relative mx-auto max-w-7xl">
@@ -115,7 +128,10 @@ export default function Navbar() {
                     </div>
                     <Dropdown.Menu>
                       <Dropdown.Item id="dashboard" textValue="Dashboard">
-                        <Link className="w-full" href={"/dashboard/recruiter"}>
+                        <Link
+                          className="w-full"
+                          href={dashboardLinks[user?.role || "seeker"]}
+                        >
                           <Label>Dashboard</Label>
                         </Link>
                       </Dropdown.Item>

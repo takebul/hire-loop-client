@@ -1,6 +1,10 @@
 import { serverGet } from "../core/server";
 import { getUserSession } from "../core/session";
 
+export const getCompanies = async () => {
+  return serverGet(`/api/companies`);
+};
+
 export const getRecruiterCompany = async (recruiterId) => {
   return serverGet(`/api/my/companies?recruiterId=${recruiterId}`);
 };

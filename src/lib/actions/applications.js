@@ -1,7 +1,7 @@
 "use server";
 
-import { serverPost } from "../core/server";
+import { serverMutation } from "../core/server";
 
 export const submitApplication = async (applicationData) => {
-  return serverPost("/api/applications", applicationData);
+  return serverMutation("/api/applications", applicationData);
 };

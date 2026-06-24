@@ -8,9 +8,9 @@ export const serverGet = async (path) => {
   return res.json();
 };
 
-export const serverPost = async (path, data) => {
+export const serverMutation = async (path, data, method = "POST") => {
   const res = await fetch(`${baseUrl}${path}`, {
-    method: "POST",
+    method: method,
     headers: {
       "Content-Type": "application/json",
     },
@@ -19,17 +19,5 @@ export const serverPost = async (path, data) => {
 
   // handle 401, 401, 403, 500
 
-  return res.json();
-};
-
-export const serverPatch = async (path, data) => {
-  const res = await fetch(`${baseUrl}${path}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  return res.json();
+  return await res.json();
 };

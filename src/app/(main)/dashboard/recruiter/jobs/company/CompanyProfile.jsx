@@ -105,7 +105,8 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         employeeRange: formFields.employeeRange,
         description: formFields.description,
         logo: logoUrl,
-        status: companyData?.status ? companyData.status : "Pending",
+        status:
+          companyData && companyData?.status ? companyData.status : "Pending",
         recruiterId: recruiter?.id || recruiter?._id,
       };
 

@@ -1,5 +1,5 @@
-import { serverPost } from "../core/server";
+import { serverMutation } from "../core/server";
 
 export const createSubscriptions = async (subsInfo) => {
-  return serverPost("/api/subscriptions", subsInfo);
+  return serverMutation("/api/subscriptions", subsInfo);
 };
