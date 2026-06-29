@@ -45,7 +45,7 @@ export async function DashboardSidebar() {
 
   const seekerNavLinks = [
     { icon: House, href: "/dashboard/seeker", label: "Dashboard" },
-    { icon: Magnifier, href: "/dashboard/seeker/jobs", label: "Jobs" },
+    { icon: Magnifier, href: "/jobs", label: "Jobs" },
     {
       icon: Bookmark,
       href: "/dashboard/seeker/jobs/saved",

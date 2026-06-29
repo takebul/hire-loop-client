@@ -1,15 +1,15 @@
 "use server";
 
-import { serverGet } from "../core/server";
+import { serverFetch } from "../core/server";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getJobs = async () => {
-  return serverGet("/api/jobs");
+  return serverFetch("/api/jobs");
 };
 
 export const getJobById = async (jobId) => {
-  return serverGet(`/api/jobs/${jobId}`);
+  return serverFetch(`/api/jobs/${jobId}`);
 };
 
 export const getCompanyJobs = async (companyId, status = "active") => {

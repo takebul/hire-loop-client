@@ -1,5 +1,5 @@
-import { serverGet } from "../core/server";
+import { serverFetch } from "../core/server";
 
 export const getPlanById = async (planId) => {
-  return serverGet(`/api/plans?planId=${planId}`);
+  return serverFetch(`/api/plans?planId=${planId}`);
 };

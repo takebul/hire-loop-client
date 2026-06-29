@@ -1,7 +1,7 @@
 "use server";
 
-import { serverGet } from "../core/server";
+import { protectedFetch } from "../core/server";
 
 export const getApplicationsByApplicant = async (applicantId) => {
-  return serverGet(`/api/applications?applicantId=${applicantId}`);
+  return protectedFetch(`/api/applications?applicantId=${applicantId}`);
 };
